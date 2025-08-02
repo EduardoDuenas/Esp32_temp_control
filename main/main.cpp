@@ -21,6 +21,12 @@ extern "C" {
 }
 #endif
 
+#include "Control.h"
+#include "My_Led.h"
+#include "Led_Control.h"
+
+
+
 #define I2C_MASTER_TIMEOUT_MS       	1000
 
 #define BMP280_I2C_ADDR                 0x77
@@ -36,8 +42,7 @@ extern "C" {
 
 #define LED_LOW							GPIO_NUM_4
 #define LED_HIGH						GPIO_NUM_5
-#define TEMP_LOW						20
-#define TEMP_HIGH						30
+
 
 TaskHandle_t read_bmp_280_task_handle = NULL;
 
@@ -55,7 +60,7 @@ void clr(int16_t led_pin){
 }
 
 #else
-class Command{  //parent Class for commands
+/* class Command{  //parent Class for commands
     public:
         virtual ~Command(){}
         virtual void run() = 0; //command place holder
@@ -83,9 +88,6 @@ class My_Led{
             gpio_set_level((gpio_num_t)led_pin, false);
         }
 };
-
-My_Led led_low_temp(LED_LOW);
-My_Led led_high_temp(LED_HIGH);
 
 class Set_Led : public Command{
     private:
@@ -173,8 +175,11 @@ class Control{
             }
         }
 };
-
+ */
 #endif
+
+My_Led led_low_temp(LED_LOW);
+My_Led led_high_temp(LED_HIGH);
 
 #ifndef PATTERN
 static void config_leds(){
@@ -260,15 +265,15 @@ void read_bmp_280_task(void *arg){
     set_leds(50);
 #else
     Control My_Control;
-    My_Control.define_config_my_high_led(new Config_Led(&led_high_temp));
-    My_Control.define_config_my_low_led(new Config_Led(&led_low_temp));
-    My_Control.define_set_my_high_led(new Set_Led(&led_high_temp));
-    My_Control.define_set_my_low_led(new Set_Led(&led_low_temp));
-    My_Control.define_clr_my_high_led(new Clr_Led(&led_high_temp));
-    My_Control.define_clr_my_low_led(new Clr_Led(&led_low_temp));
+    My_Control.define_config_my_high_action(new Config_Led(&led_high_temp));
+    My_Control.define_config_my_low_action(new Config_Led(&led_low_temp));
+    My_Control.define_set_my_high_action(new Set_Led(&led_high_temp));
+    My_Control.define_set_my_low_action(new Set_Led(&led_low_temp));
+    My_Control.define_clr_my_high_action(new Clr_Led(&led_high_temp));
+    My_Control.define_clr_my_low_action(new Clr_Led(&led_low_temp));
 
-    My_Control.config_my_leds();
-    My_Control.my_temp(50);
+    My_Control.config_my_actions();
+    My_Control.my_input(50);
 #endif
 
     i2c_master_bus_handle_t bus_handle;
@@ -317,7 +322,7 @@ void read_bmp_280_task(void *arg){
 #ifndef PATTERN
         set_leds(true_temp);
 #else
-        My_Control.my_temp(true_temp);
+        My_Control.my_input(true_temp);
 #endif
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
