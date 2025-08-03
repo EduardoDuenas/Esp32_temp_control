@@ -32,20 +32,28 @@ void Control::config_my_actions(){
     if(this->config_my_high_action != NULL && this->config_my_low_action != NULL){
         this->config_my_high_action->run();
         this->config_my_low_action->run();
+    }else{
+        ESP_ERROR_CHECK(ESP_ERR_INVALID_ARG);
     }
+}
+void Control::change_param(int16_t low_param, int16_t high_param){
+    this->input_low = low_param;
+    this->input_high = high_param;
 }
 void Control::my_input(float input){
     if(this->set_my_high_action != NULL && this->set_my_low_action != NULL && this->clr_my_high_action != NULL && this->clr_my_low_action != NULL){
-            if(input > INPUT_HIGH){
+            if(input > this->input_high){
                 this->set_my_low_action->run();
                 this->set_my_high_action->run();
-            }else if(input < INPUT_LOW) {
+            }else if(input < this->input_low) {
                 this->clr_my_low_action->run();
                 this->clr_my_high_action->run();
             }else{
                 this->set_my_low_action->run();
                 this->clr_my_high_action->run();
             }
+    }else{
+        ESP_ERROR_CHECK(ESP_ERR_INVALID_ARG);
     }
 }
 

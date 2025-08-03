@@ -42,6 +42,8 @@ extern "C" {
 
 #define LED_LOW							GPIO_NUM_4
 #define LED_HIGH						GPIO_NUM_5
+#define TEMP_INPUT_LOW                  20
+#define TEMP_INPUT_HIGH                 30
 
 
 TaskHandle_t read_bmp_280_task_handle = NULL;
@@ -271,7 +273,7 @@ void read_bmp_280_task(void *arg){
     My_Control.define_set_my_low_action(new Set_Led(&led_low_temp));
     My_Control.define_clr_my_high_action(new Clr_Led(&led_high_temp));
     My_Control.define_clr_my_low_action(new Clr_Led(&led_low_temp));
-
+    My_Control.change_param(TEMP_INPUT_LOW,TEMP_INPUT_HIGH);
     My_Control.config_my_actions();
     My_Control.my_input(50);
 #endif
@@ -334,7 +336,7 @@ void read_bmp_280_task(void *arg){
 extern "C" {
 #endif
 void app_main(void){
-    xTaskCreatePinnedToCore(read_bmp_280_task, "read_bmp_280_task", 4098, NULL, 10, &read_bmp_280_task_handle, 1);  // Core 1
+    xTaskCreate(read_bmp_280_task, "read_bmp_280_task", 4098, NULL, 10, &read_bmp_280_task_handle);  // Core 1
 }
 #ifdef __cplusplus
 }

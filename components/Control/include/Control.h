@@ -2,11 +2,12 @@
 #define CONTROL_H
 #include "Command.h"
 #include "driver/gpio.h"
+#include "esp_log.h"
 
-int16_t INPUT_LOW  = 20;
-int16_t INPUT_HIGH = 30;
 
 class Control{
+    int16_t input_low  = 20;
+    int16_t input_high = 30;
     private:
         Command *config_my_high_action;
         Command *config_my_low_action;
@@ -23,6 +24,7 @@ class Control{
         void define_clr_my_high_action(Command *command);
         void define_clr_my_low_action(Command *command);
         void config_my_actions();
+        void change_param(int16_t low_param, int16_t high_param);
         void my_input(float input);
 };
 

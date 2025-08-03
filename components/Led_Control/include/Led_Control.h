@@ -8,9 +8,7 @@ class Set_Led : public Command{
         My_Led *my_led;
     public:
         Set_Led(My_Led *led) : my_led(led){}
-        void run() override{
-            my_led->set();
-        }
+        void run() override;
 };
 
 class Clr_Led : public Command {
@@ -18,9 +16,7 @@ class Clr_Led : public Command {
         My_Led *my_led;
     public:
         Clr_Led(My_Led *led) : my_led(led){}
-        void run() override{
-            my_led->clr();
-        }
+        void run() override;
 };
 
 class Config_Led : public Command{
@@ -28,9 +24,7 @@ class Config_Led : public Command{
         My_Led *my_led;
     public:
         Config_Led(My_Led *led) : my_led(led){}
-        void run() override{
-            my_led->config();
-        }
+        void run() override;
 };
 
 #endif
